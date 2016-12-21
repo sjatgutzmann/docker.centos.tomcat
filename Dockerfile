@@ -34,9 +34,10 @@ RUN curl -sSLo ./apache-tomcat-${TOMCAT_VERSION}.tar.gz http://ftp.fau.de/apache
   && tar --extract --ungzip --file ./apache-tomcat-${TOMCAT_VERSION}.tar.gz --strip 1 --directory ${CATALINA_HOME} \
   && rm ./apache-tomcat-${TOMCAT_VERSION}.tar.gz  
 
-VOLUME ["${CATALINA_HOME}/logs"]
-VOLUME ["${CATALINA_HOME}/webapps"]
-VOLUME ["${CATALINA_HOME}/work"]
+# remove mvolume to allow child images to write to this dirs with RUN command
+#VOLUME ["${CATALINA_HOME}/logs"]
+#VOLUME ["${CATALINA_HOME}/webapps"]
+#VOLUME ["${CATALINA_HOME}/work"]
 
 # Standard web ports exposted
 #EXPOSE ${HTTP_PORT}/tcp ${HTTPS_PORT}/tcp ${AJP_PORT}/tcp
