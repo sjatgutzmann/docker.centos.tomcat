@@ -11,6 +11,7 @@ ARG TOMCAT_MANAGER_PASSWD=tomcat
 ARG HTTP_PORT=8080
 ARG HTTPS_PORT=8443
 ARG AJP_PORT=8009
+ARG SHUTDOWN_PORT=8005
 
 ADD "run.bash" "/run.bash"
 RUN chmod +x /run.bash
@@ -35,12 +36,13 @@ RUN curl -sSLo ./apache-tomcat-${TOMCAT_VERSION}.tar.gz http://ftp.fau.de/apache
   && rm ./apache-tomcat-${TOMCAT_VERSION}.tar.gz  
 # https://github.com/docker/docker/issues/6119
 USER root
-COPY server.xml ${CATALINA_HOME}/server.xml
+COPY server.xml ${CATALINA_HOME}/conf/server.xml
 COPY catalina.properties ${CATALINA_HOME}/conf/catalina.properties
-RUN echo "http.port=$HTTP_PORT" >> ${CATALINA_HOME}/conf/catalina.properties \
-	&& echo "https.port=$HTTPS_PORT" >> ${CATALINA_HOME}/conf/catalina.properties \
-	&& echo "ajp.port=$AJP_PORT" >> ${CATALINA_HOME}/conf/catalina.properties \
-	&& chown tomcat:tomcat ${CATALINA_HOME}/conf/catalina.properties ${CATALINA_HOME}/server.xml
+RUN echo "http.port=${HTTP_PORT}" >> ${CATALINA_HOME}/conf/catalina.properties \
+	&& echo "https.port={$HTTPS_PORT}" >> ${CATALINA_HOME}/conf/catalina.properties \
+	&& echo "ajp.port=${AJP_PORT}" >> ${CATALINA_HOME}/conf/catalina.properties \
+	&& echo "shutdown.port=${SHUTDOWN_PORT}" >> ${CATALINA_HOME}/conf/catalina.properties \
+	&& chown tomcat:tomcat ${CATALINA_HOME}/conf/catalina.properties ${CATALINA_HOME}/conf/server.xml
 
 USER tomcat
 # remove mvolume to allow child images to write to this dirs with RUN command
